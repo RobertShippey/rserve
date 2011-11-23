@@ -6,7 +6,8 @@ public class rand
       Random r = new Random();
       try
       {
-         for i=0;i<args[0];x++)
+         int number = Integer.parseInt(args[0]);
+         for(int i=0;i<number;i++)
          {
             System.out.print("Your random number is:");
             System.out.println(r.nextInt(10));
@@ -20,6 +21,12 @@ public class rand
             System.out.println(r.nextInt(10));
             
          }
+      }
+      catch (NumberFormatException ex)
+      {
+         System.err.println("Error parsing your value.");
+         System.err.println(ex.getMessage());
+         System.exit(0);
       }      
    }
 }

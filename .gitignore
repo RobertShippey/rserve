@@ -1,1 +1,6 @@
 *.class
+*.xml
+*.properties
+*.TXT
+*.mf
+*.jar

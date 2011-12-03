@@ -1,11 +1,10 @@
 #!/bin/sh
+echo "Starting..."
 cd c
 rm *.class
 cd ..
-javac *.java
-echo "All Builds complete!"
+javac *.java >z
 mv *.class c
 cd c
-echo "All classes:"
 ls
-
+echo "Done!\a"

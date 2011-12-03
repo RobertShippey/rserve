@@ -1,6 +1,6 @@
 import java.io.*;
 
-class readtest
+class reading
 {
     private static String _text;
     private static BufferedReader user = new BufferedReader(new InputStreamReader(System.in));

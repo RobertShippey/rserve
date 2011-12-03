@@ -1,6 +1,6 @@
 #!/bin/sh
 echo "Starting..."
-cd c
+cd ~/Desktop/Java/c
 rm *.class
 cd ..
 javac *.java >z

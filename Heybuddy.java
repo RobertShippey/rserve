@@ -1,5 +1,5 @@
 import java.io.*;
-public class Heybuddy
+public class heybuddy
 {
     public static void main (String[] args)
     {

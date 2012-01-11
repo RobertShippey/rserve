@@ -9,6 +9,8 @@ public class rserver
     
     public static void main (String args[]) throws Exception
     {
+        String eol = System.getProperty("line.separator");
+        
         System.out.println("Server is running...");
         server = new ServerSocket(8081);
         
@@ -40,9 +42,13 @@ public class rserver
             OutputStream clientOutput = client.getOutputStream();
             System.out.println("Sending...");
             
-            //String strHeader = new String("HTTP/1.0 200 OK\nContent-Type: text/java\n");
-            //char[] header = strHeader.toCharArray();
-            //clientOutput.write(header,0,strHeader.length());
+            String strHeader = new String("HTTP/1.0 201 OK" + eol +
+                                          "Content-Type: text/plain" + eol +
+                                          "Last-Modified: " + myFile.lastModified() + eol +
+                                          "Content-Length: " + fileByes.length + eol +
+                                          "Server: rserver" + eol);
+            byte[] header = strHeader.getBytes();
+            //clientOutput.write(header,0,header.length);
             clientOutput.write(fileByes,0,fileByes.length);
             
             clientOutput.flush();

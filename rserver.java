@@ -24,6 +24,9 @@ public class rserver
             {
                 System.out.print(clientBytes[x]);
             }
+            String clientHeader = new String(getHeader(client));
+            
+            System.out.println(clientHeader);
             
             
             File myFile = new File ("index.html");
@@ -46,5 +49,14 @@ public class rserver
             System.out.println("Done!");
             client.close();
         }
+    }
+    
+    private static String getHeader (Socket client) throws Exception
+    {
+        BufferedInputStream clientInput = new BufferedInputStream(client.getInputStream());
+        byte[] clientBytes = new byte [client.getReceiveBufferSize()];
+        clientInput.read(clientBytes,0,clientBytes.length);
+        String header = new String(clientBytes);
+        return header;
     }
 }

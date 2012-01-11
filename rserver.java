@@ -19,13 +19,6 @@ public class rserver
             System.out.println("Waiting for client...");
             client = server.accept(); 
             System.out.println("Got one!");
-            BufferedInputStream clientInput = new BufferedInputStream(client.getInputStream());
-            byte[] clientBytes = new byte [200];
-            clientInput.read(clientBytes,0,100);
-            for(int x=0;x<100;x++)
-            {
-                System.out.print(clientBytes[x]);
-            }
             String clientHeader = new String(getHeader(client));
             
             System.out.println(clientHeader);

@@ -44,7 +44,7 @@ public class rserver
                                           "Content-Type: text/plain" + eol +
                                           "Last-Modified: " + myFile.lastModified() + eol +
                                           "Content-Length: " + fileByes.length + eol +
-                                          "Server: rserver" + eol);
+                                          "Server: rserver" + eol + eol);
             byte[] header = strHeader.getBytes();
             //clientOutput.write(header,0,header.length);
             clientOutput.write(fileByes,0,fileByes.length);
@@ -53,14 +53,5 @@ public class rserver
             System.out.println("Done!");
             client.close();
         }
-    }
-    
-    private static String getHeader (Socket client) throws Exception
-    {
-        BufferedInputStream clientInput = new BufferedInputStream(client.getInputStream());
-        byte[] clientBytes = new byte [client.getReceiveBufferSize()];
-        clientInput.read(clientBytes,0,clientBytes.length);
-        String header = new String(clientBytes);
-        return header;
     }
 }

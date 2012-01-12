@@ -1,4 +1,5 @@
 import java.net.*;
+import java.io.*;
 
 public class header
 {
@@ -14,7 +15,7 @@ public class header
     public String contentType = null;
     public String contentLength = null;
       
-    public void parseRequest(Socket client)
+    public void parseRequest(Socket client) throws Exception
     {
         BufferedInputStream clientInput = new BufferedInputStream(client.getInputStream());
         byte[] clientBytes = new byte [client.getReceiveBufferSize()];
@@ -25,7 +26,7 @@ public class header
         return;
     }
     
-    public byte[] getResponse()
+    public byte[] getResponse() throws Exception
     {
         byte [] response = new byte [1];
          //code

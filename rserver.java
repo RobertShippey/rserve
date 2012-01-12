@@ -14,7 +14,7 @@ public class rserver
         String eol = System.getProperty("line.separator");
         
         System.out.println("Server is running...");
-        server = new ServerSocket(8081);
+        server = new ServerSocket(8080);
         
         while(true)
         {

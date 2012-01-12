@@ -6,6 +6,8 @@ public class rserver
     private static Socket client = null;
     private static ServerSocket server = null;
     private static PrintWriter outStream = null;
+    private static header request = null;
+    private static header response = null;
     
     public static void main (String args[]) throws Exception
     {
@@ -19,12 +21,15 @@ public class rserver
             System.out.println("Waiting for client...");
             client = server.accept(); 
             System.out.println("Got one!");
-            String clientHeader = new String(getHeader(client));
+            request = new header();
+            request.parseRequest(client);
+            //String clientHeader = new String(getHeader(client));
             
-            System.out.println(clientHeader);
+            //System.out.println(clientHeader);
             
             
             File myFile = new File ("index.html");
+            //File page = new File (request.path);
             
             BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(myFile));
             

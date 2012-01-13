@@ -12,9 +12,12 @@ public class rserver
     public static void main (String args[]) throws Exception
     {
         String eol = System.getProperty("line.separator");
+        int port = 0;
+        try { port = Integer.parseInt(args[0]); }
+        catch(Exception e) { System.err.println("You did not set a valid port, the first available will be used.");}
         
-        System.out.println("Server is running...");
-        server = new ServerSocket(8080);
+        server = new ServerSocket(port);
+        System.out.println("Server is running on " + server.getInetAddress().getHostName() + ":" + String.valueOf(server.getLocalPort()));
         
         while(true)
         {

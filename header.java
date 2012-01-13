@@ -22,6 +22,10 @@ public class header
         clientInput.read(clientBytes,0,clientBytes.length);
         String header = new String(clientBytes);
         
+//        if(header.charAt(5).equals('G'))
+//        {
+//            method = new String("GET");
+//        }
         //code
         return;
     }

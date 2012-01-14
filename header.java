@@ -6,16 +6,14 @@ public class header
     public String method = null;
     public String path = null;
     public String version = null;
-    //public String response = null;
-    //public String reason = null;
+    public String status = null;
     public String from = null;
     //public String userAgent = null;
     public String server = null;
     public String lastModified = null;
     public String contentType = null;
     public String contentLength = null;
-      
-    public byte[] _body = null;
+    private byte[] _body = null;
     public void parseRequest(Socket client) throws Exception
     {
         String eol = System.getProperty("line.separator");

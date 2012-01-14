@@ -1,5 +1,7 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
+import java.text.SimpleDateFormat;
 
 public class rserver
 {
@@ -15,16 +17,36 @@ public class rserver
         int port = 0;
         try { port = Integer.parseInt(args[0]); }
         catch(Exception e) { System.err.println("You did not set a valid port, the first available will be used.");}
-        
-        server = new ServerSocket(port);
-        System.out.println("Server is running on " + server.getInetAddress().getHostName() + ":" + String.valueOf(server.getLocalPort()));
+        try {
+            server = new ServerSocket(port);
+            System.out.println("Server is running on " + server.getInetAddress().getHostName() + ":" + String.valueOf(server.getLocalPort()));
+        }
+        catch(IOException e) {
+            System.err.println("Error when opening socket");
+            System.err.println(e.getMessage());
+            return; }
+        catch(SecurityException e) {
+            System.err.println("A security error occured");
+            System.err.println(e.getMessage());
+            return;
+        }
         
         while(true)
         {
             System.out.println("Waiting for client...");
-            client = server.accept(); 
-            System.out.println("Got one!");
             request = new header();
+            try{ client = server.accept(); 
+                System.out.println("Got one!");}
+            catch(IOException e) {
+                System.err.println("Error when opening socket");
+                System.err.println(e.getMessage());
+                return; }
+            catch(SecurityException e) {
+                System.err.println("A security error occured");
+                System.err.println(e.getMessage());
+                return;
+            }
+            
             request.parseRequest(client);
             //String clientHeader = new String(getHeader(client));
             
@@ -44,12 +66,15 @@ public class rserver
             System.out.println("Sending...");
             
             String strHeader = new String("HTTP/1.0 201 OK" + eol +
-                                          "Content-Type: text/plain" + eol +
-                                          "Last-Modified: " + page.lastModified() + eol +
+            Date mod = new Date (page.lastModified());
+            SimpleDateFormat formatter = new SimpleDateFormat("E, d M yyyy H:m:s z");
+            String lastModified = new String(formatter.format(mod));
+                                          "Content-Type: text/html" + eol +
+                                          "Last-Modified: " + lastModified + eol +
                                           "Content-Length: " + fileByes.length + eol +
                                           "Server: rserver" + eol + eol);
             byte[] header = strHeader.getBytes();
-            //clientOutput.write(header,0,header.length);
+            clientOutput.write(header,0,header.length);
             clientOutput.write(fileByes,0,fileByes.length);
             
             clientOutput.flush();

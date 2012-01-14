@@ -31,12 +31,12 @@ public class rserver
             //System.out.println(clientHeader);
             
             System.out.println(request.path);
-            File myFile = new File ("index.html");
-            //File page = new File (request.path);
+            //File myFile = new File ("index.html");
+            File page = new File (request.path);
             
-            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(myFile));
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(page));
             
-            byte [] fileByes  = new byte [(int)myFile.length()];
+            byte [] fileByes  = new byte [(int)page.length()];
             
             inputStream.read(fileByes,0,fileByes.length);
             
@@ -45,7 +45,7 @@ public class rserver
             
             String strHeader = new String("HTTP/1.0 201 OK" + eol +
                                           "Content-Type: text/plain" + eol +
-                                          "Last-Modified: " + myFile.lastModified() + eol +
+                                          "Last-Modified: " + page.lastModified() + eol +
                                           "Content-Length: " + fileByes.length + eol +
                                           "Server: rserver" + eol + eol);
             byte[] header = strHeader.getBytes();

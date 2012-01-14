@@ -17,15 +17,30 @@ public class header
       
     public void parseRequest(Socket client) throws Exception
     {
+        String eol = System.getProperty("line.separator");
         BufferedInputStream clientInput = new BufferedInputStream(client.getInputStream());
         byte[] clientBytes = new byte [client.getReceiveBufferSize()];
         clientInput.read(clientBytes,0,clientBytes.length);
         String header = new String(clientBytes);
         
-//        if(header.charAt(5).equals('G'))
-//        {
-//            method = new String("GET");
-//        }
+        method = new String(header.substring(0,header.indexOf(' ')));
+        header = header.substring(header.indexOf(' '));
+        header.trim();
+        
+        path = new String(header.substring(0,header.indexOf(' ')));
+        header = header.substring(3);
+        header.trim();
+        
+        File dirTestFile = new File(path);
+        if(dirTestFile.isDirectory())
+            path = new String(path + "index.html");
+        
+        File fileTestFile = new File(path);
+        if(!fileTestFile.isFile())
+            path = new String("/404.html");
+        
+        version = new String(header.substring(0,header.indexOf(eol.charAt(0))));
+        
         //code
         return;
     }

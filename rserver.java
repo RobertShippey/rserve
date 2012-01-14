@@ -30,7 +30,7 @@ public class rserver
             
             //System.out.println(clientHeader);
             
-            
+            System.out.println(request.path);
             File myFile = new File ("index.html");
             //File page = new File (request.path);
             

@@ -13,7 +13,7 @@ public class rserver
     
     public static void main (String args[]) throws Exception
     {
-        String eol = System.getProperty("line.separator");
+        String eol = new String("\r\n");
         int port = 0;
         try { port = Integer.parseInt(args[0]); }
         catch(Exception e) { System.err.println("You did not set a valid port, the first available will be used.");}
@@ -61,25 +61,34 @@ public class rserver
             byte [] fileByes  = new byte [(int)page.length()];
             
             inputStream.read(fileByes,0,fileByes.length);
+            page = null;
+            inputStream = null;
             
             OutputStream clientOutput = client.getOutputStream();
             System.out.println("Sending...");
             
-            String strHeader = new String("HTTP/1.0 201 OK" + eol +
             Date mod = new Date (page.lastModified());
             SimpleDateFormat formatter = new SimpleDateFormat("E, d M yyyy H:m:s z");
             String lastModified = new String(formatter.format(mod));
+            mod = null;
+            formatter = null;
+            
+            String strHeader = new String("HTTP/1.0 200 OK" + eol +
                                           "Content-Type: text/html" + eol +
                                           "Last-Modified: " + lastModified + eol +
                                           "Content-Length: " + fileByes.length + eol +
                                           "Server: rserver" + eol + eol);
+            lastModified = null;
             byte[] header = strHeader.getBytes();
+            strHeader = null;
             clientOutput.write(header,0,header.length);
+            header = null;
             clientOutput.write(fileByes,0,fileByes.length);
             
             clientOutput.flush();
             System.out.println("Done!");
             client.close();
+            client = null;
         }
     }
 }

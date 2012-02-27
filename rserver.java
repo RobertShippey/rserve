@@ -16,7 +16,6 @@ public class rserver extends Thread
     public static void main (String args[]) throws Exception
     {
         int port = 0;
-        ServerSocket server;
         try { port = Integer.parseInt(args[0]); }
         catch(Exception e){ 
             System.err.println("You did not set a valid port, the first available will be used.");
@@ -67,60 +66,87 @@ public class rserver extends Thread
         client = c;
         start();
     }
-    
-    public void run()  {
-        try{
-            request = new header();
-            request.parseRequest(client);
-            //String clientHeader = new String(getHeader(client));
-            
-            //System.out.println(clientHeader);
-            
-            System.out.println(request.path);
-            //File myFile = new File ("index.html");
-            byte [] fileByes;
-            BufferedInputStream inputStream;
-            File page;
-            
-            try{
-                page = new File (request.path);
-                inputStream = new BufferedInputStream(new FileInputStream(page));
-                fileByes  = new byte [(int)page.length()];
-            } catch (IOException e)
+
+    @Override
+    public void run() {
+
+        request = new header();
+        response = new header ();
+        try {
+            BufferedInputStream clientInput = new BufferedInputStream(client.getInputStream());
+            byte[] clientBytes = new byte[client.getReceiveBufferSize()];
+            clientInput.read(clientBytes, 0, clientBytes.length);
+            request.parseRequest(clientBytes);
+        } catch (IOException e) {
+            System.err.append("Could not understand header");
+            return;
+        }
+
+
+        byte[] fileBytes = null;
+        File page = new File(System.getProperty("user.dir") + request.path);
+        if (page.isDirectory())
+        {
+            request.path += "/index.html";
+            page = new File(request.path);
+        }
+        if (page.isFile())
+        {
+            try
             {
-                fileByes = null;
-                inputStream = null;
-                page = null;
-            }
-            
-            
-            inputStream.read(fileByes,0,fileByes.length);
-            
-            OutputStream clientOutput = client.getOutputStream();
-            System.out.println("Sending...");
-            
-            Date mod = new Date (page.lastModified());
+                BufferedInputStream inputStream1 = new BufferedInputStream(new FileInputStream(page));
+                fileBytes = new byte[(int) page.length()];
+                inputStream1.read(fileBytes, 0, fileBytes.length);
+
+                
+                Date mod = new Date(page.lastModified());
             SimpleDateFormat formatter = new SimpleDateFormat("E, d M yyyy H:m:s z");
-            String lastModified = new String(formatter.format(mod));
-            
-            String strHeader = new String("HTTP/1.0 " + request.status + eol +
-                                          "Content-Type: text/html" + eol +
-                                          "Last-Modified: " + lastModified + eol +
-                                          "Content-Length: " + fileByes.length + eol +
-                                          "Server: rserver" + eol + eol);
-            
-            byte[] header = strHeader.getBytes();
-            clientOutput.write(header,0,header.length);
-            if(fileByes!=null)
-            clientOutput.write(fileByes,0,fileByes.length);
-            
+                response.lastModified = formatter.format(mod); 
+                response.status = "200 OK";
+                response.contentLength = fileBytes.length;
+            }
+            catch (IOException e)
+            {
+            }
+        } 
+        else
+        {
+            File fnf = new File(System.getProperty("user.dir") + "/404.html");
+            response.status = "400 Not Found";
+            if (fnf.isFile())
+            {
+                try
+                {
+                    BufferedInputStream inputStream2 = new BufferedInputStream(new FileInputStream(fnf));
+                    fileBytes = new byte[(int) fnf.length()];
+                    inputStream2.read(fileBytes, 0, fileBytes.length);
+                    
+                    response.contentLength = fileBytes.length;
+                }
+                catch (IOException e)
+                {
+                }
+                
+            }
+            else {
+                fileBytes = null;
+            }
+        }
+ 
+        System.out.println("Sending...");
+        try{
+            OutputStream clientOutput = client.getOutputStream();
+
+            byte[] header = response.getResponse();
+            clientOutput.write(header, 0, header.length);
+            if (fileBytes != null) {
+                clientOutput.write(fileBytes, 0, fileBytes.length);
+            }
+
             clientOutput.flush();
-            System.out.println("Done!");
             client.close();
+        } catch (IOException e) {}
+            System.out.println("Done!");
         }
-        catch (Exception e){
-            System.err.println(e);
-        }
-        
-    }
+    
 }

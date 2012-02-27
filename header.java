@@ -14,13 +14,12 @@ public class header
     public String contentType = null;
     public String contentLength = null;
     private byte[] _body = null;
-    public void parseRequest(Socket client) throws Exception
+    
+    private final String eol = System.getProperty("line.separator");
+    
+    public void parseRequest(byte[] r) throws IOException
     {
-        String eol = System.getProperty("line.separator");
-        BufferedInputStream clientInput = new BufferedInputStream(client.getInputStream());
-        byte[] clientBytes = new byte [client.getReceiveBufferSize()];
-        clientInput.read(clientBytes,0,clientBytes.length);
-        String header = new String(clientBytes);
+        String header = new String(r);
         
         //get first line of header
         header = header.substring(0,header.indexOf((eol.charAt(0))));
@@ -39,8 +38,7 @@ public class header
         //System.out.println(header + "@");
         
         //get the path
-        String currentDir = System.getProperty("user.dir");
-        path = new String(currentDir + header.substring(0,header.indexOf(' ')));
+        path = header.substring(0,header.indexOf(' '));
         //System.out.println(path + "@");
         
         //remove the path from header
@@ -48,38 +46,15 @@ public class header
         header = header.trim();
         //System.out.println(header + "@");
         
-        //test if path is directory
-        File dirTestFile = new File(path);
-        if(dirTestFile.isDirectory()){
-            //if so, concat index.html
-            path = path + "index.html";
-            //System.out.println(path + "@dir");
-        }
-        
-        //test if file exists
-        File fileTestFile = new File(path);
-        if(fileTestFile.isFile()){
-            //System.out.println(path + "@file");
-            status = "200 OK";
-        } else {
-            status = "404 Not Found";
-            path = currentDir + "/404.html";
-            //System.out.println(path + "@nofile");
-        }
-        
-        version = new String(header);
+        version = header;
         //System.out.println(version + "@");
         
         //code
         return;
     }
     
-    public byte[] getResponse() throws Exception
-    {
-        byte [] response = new byte [1];
-         //code
-        return response;
-    }
+ 
+    
     
     public byte[] getBody() throws Exception
     {
@@ -91,6 +66,36 @@ public class header
         _body = new byte[body.length];
         _body = body;
         return;
+    }
+    
+    public byte [] getResponse()
+    {
+        String header = "HTTP/1.0 ";
+        header+=status;
+        header+= eol;
+        
+        header+="Content-Type: text/html";
+        header+=eol;
+        
+        if(lastModified!=null)
+        {
+            header+="Last-Modified: ";
+            header+=lastModified;
+            header+=eol;
+        }
+        
+        if(contentLength!=null)
+        {
+            header+="Content-Length: ";
+            header+=contentLength;
+            header+=eol;
+        }
+        
+        header+="Server: rserver:";
+        header+=eol;
+        header+=eol;
+
+        return header.getBytes();
     }
     
 }

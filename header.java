@@ -1,4 +1,3 @@
-import java.net.*;
 import java.io.*;
 
 public class header
@@ -8,12 +7,12 @@ public class header
     public String version = null;
     public String status = null;
     public String from = null;
-    //public String userAgent = null;
     public String server = null;
     public String lastModified = null;
     public String contentType = null;
-    public String contentLength = null;
-    private byte[] _body = null;
+    public int contentLength = -1;
+    //private byte[] _body = null;
+    //public String userAgent = null;
     
     private final String eol = System.getProperty("line.separator");
     
@@ -52,21 +51,19 @@ public class header
         //code
         return;
     }
+  
     
- 
-    
-    
-    public byte[] getBody() throws Exception
-    {
-        return _body;
-    }
-    
-    public void setBody(byte[] body) throws Exception
-    {
-        _body = new byte[body.length];
-        _body = body;
-        return;
-    }
+//    public byte[] getBody() throws Exception
+//    {
+//        return _body;
+//    }
+//    
+//    public void setBody(byte[] body) throws Exception
+//    {
+//        _body = new byte[body.length];
+//        _body = body;
+//        return;
+//    }
     
     public byte [] getResponse()
     {
@@ -84,7 +81,7 @@ public class header
             header+=eol;
         }
         
-        if(contentLength!=null)
+        if(contentLength>0)
         {
             header+="Content-Length: ";
             header+=contentLength;

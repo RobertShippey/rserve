@@ -78,11 +78,21 @@ public class rserver extends Thread
             
             System.out.println(request.path);
             //File myFile = new File ("index.html");
-            File page = new File (request.path);
+            byte [] fileByes;
+            BufferedInputStream inputStream;
+            File page;
             
-            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(page));
+            try{
+                page = new File (request.path);
+                inputStream = new BufferedInputStream(new FileInputStream(page));
+                fileByes  = new byte [(int)page.length()];
+            } catch (IOException e)
+            {
+                fileByes = null;
+                inputStream = null;
+                page = null;
+            }
             
-            byte [] fileByes  = new byte [(int)page.length()];
             
             inputStream.read(fileByes,0,fileByes.length);
             
@@ -93,7 +103,7 @@ public class rserver extends Thread
             SimpleDateFormat formatter = new SimpleDateFormat("E, d M yyyy H:m:s z");
             String lastModified = new String(formatter.format(mod));
             
-            String strHeader = new String("HTTP/1.0 200 OK" + eol +
+            String strHeader = new String("HTTP/1.0 " + request.status + eol +
                                           "Content-Type: text/html" + eol +
                                           "Last-Modified: " + lastModified + eol +
                                           "Content-Length: " + fileByes.length + eol +
@@ -101,6 +111,7 @@ public class rserver extends Thread
             
             byte[] header = strHeader.getBytes();
             clientOutput.write(header,0,header.length);
+            if(fileByes!=null)
             clientOutput.write(fileByes,0,fileByes.length);
             
             clientOutput.flush();

@@ -60,7 +60,9 @@ public class header
         File fileTestFile = new File(path);
         if(fileTestFile.isFile()){
             //System.out.println(path + "@file");
+            status = "200 OK";
         } else {
+            status = "404 Not Found";
             path = currentDir + "/404.html";
             //System.out.println(path + "@nofile");
         }
